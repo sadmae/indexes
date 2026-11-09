@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Доверие и регулирование: модель Кыргызстана</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=PT+Serif:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* layout: панель решений слева (на десктопе липкая), справа вывод → заключение → графики → детали; на телефоне в одну колонку */
+  --bg:#f4f5f2; --panel:#ffffff; --ink:#1d2328; --muted:#5f6b72; --line:#d9ddd8;
+  --accent:#1f5f8b; --accent-soft:#dbe8f2;
+  --good:#2f7d4f; --good-soft:#dcefe2; --bad:#b23a2e; --bad-soft:#f6e0dc; --warn:#a86b12; --warn-soft:#f5e8d2;
+  --alpha:#1f5f8b; --reg:#c2611a;
+  --display:"PT Serif", Georgia, serif; --body:"Golos Text", system-ui, sans-serif; --mono:"JetBrains Mono", ui-monospace, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#13181b; --panel:#1b2226; --ink:#e7ebe8; --muted:#9aa6ab; --line:#2e383d;
+    --accent:#6fb0de; --accent-soft:#1d3444;
+    --good:#5fbf86; --good-soft:#18352a; --bad:#e8786b; --bad-soft:#3d201d; --warn:#e0a54a; --warn-soft:#3a2c16;
+    --alpha:#6fb0de; --reg:#f0954f; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#13181b; --panel:#1b2226; --ink:#e7ebe8; --muted:#9aa6ab; --line:#2e383d;
+  --accent:#6fb0de; --accent-soft:#1d3444;
+  --good:#5fbf86; --good-soft:#18352a; --bad:#e8786b; --bad-soft:#3d201d; --warn:#e0a54a; --warn-soft:#3a2c16;
+  --alpha:#6fb0de; --reg:#f0954f; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0;padding-block:24px 48px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.wrap{max-width:1240px;margin:0 auto;display:grid;gap:20px}
+header h1{font:700 28px/1.2 var(--display);margin:0 0 6px;text-wrap:balance}
+header p{margin:0;color:var(--muted);max-width:78ch}
+.grid{display:grid;grid-template-columns:350px minmax(0,1fr);gap:20px;align-items:start}
+@media (min-width:901px){.controls{position:sticky;top:max(16px, env(safe-area-inset-top, 0px));max-height:calc(100vh - 32px);overflow-y:auto}}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;min-width:0}
+h2{font:600 13px/1.3 var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 12px}
+.controls{display:grid;gap:18px}
+.group{display:grid;gap:12px}
+.group+.group{border-top:1px solid var(--line);padding-top:14px}
+.group .sub{font-size:12.5px;color:var(--muted);margin:-6px 0 0}
+.ctl{display:grid;gap:4px}
+.ctl .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.ctl label{font-weight:500;font-size:14px}
+.ctl output{font:600 13px var(--mono);color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ctl output.changed{background:var(--accent-soft);border-radius:4px;padding:0 4px}
+.ctl small{color:var(--muted);font-size:12px;line-height:1.35}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0}
+input[type=range]:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button,.btn{font:500 13px var(--body);border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;text-align:left}
+.presets button:hover,.btn:hover{border-color:var(--accent)}
+.presets button.on{background:var(--accent);color:var(--panel);border-color:var(--accent)}
+.right{display:grid;gap:20px;min-width:0}
+
+.verdict{border-radius:10px;padding:14px 16px;border:1px solid var(--line);display:grid;gap:4px}
+.verdict.good{background:var(--good-soft);border-color:var(--good)}
+.verdict.bad{background:var(--bad-soft);border-color:var(--bad)}
+.verdict b{font:700 20px/1.25 var(--display)}
+.verdict .vname{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.verdict span{max-width:80ch}
+
+.status{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.status{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;display:grid;gap:2px;align-content:start}
+.tile .k{font-size:12px;color:var(--muted)}
+.tile .v{font:600 22px var(--mono);font-variant-numeric:tabular-nums}
+.tile .d{font-size:12px;color:var(--muted)}
+
+.gauge{position:relative;height:46px;margin:44px 0 30px}
+.gauge .bar{position:absolute;left:0;right:0;top:16px;height:14px;border-radius:7px;background:linear-gradient(90deg,var(--bad-soft),var(--line) 50%,var(--good-soft));border:1px solid var(--line)}
+.gauge .band{position:absolute;top:16px;height:14px;background:var(--muted);opacity:.25;border-radius:3px}
+.gauge .mark{position:absolute;top:8px;width:2px;height:30px;transform:translateX(-1px)}
+.gauge .lab{position:absolute;font-size:12px;white-space:nowrap;transform:translateX(-50%);font-variant-numeric:tabular-nums}
+.gauge .lab.up{top:-18px}.gauge .lab.dn{top:40px}.gauge .lab.dn2{top:58px}
+.gauge.deep{margin-bottom:46px}
+.gauge .ax{position:absolute;top:-34px;font:11px var(--mono);color:var(--muted);transform:translateX(-50%)}
+.gaptext{margin:0;max-width:80ch}
+
+.memo{padding:22px 22px 18px}
+.memo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:6px}
+.memo-head h2{margin:0 0 4px}
+.memo-head .title{font:700 22px/1.25 var(--display);margin:0;text-wrap:balance;max-width:40ch}
+.memo-sec{display:grid;grid-template-columns:170px minmax(0,1fr);gap:4px 20px;padding:12px 0;border-bottom:1px solid var(--line)}
+.memo-sec:last-of-type{border-bottom:0}
+@media (max-width:640px){.memo-sec{grid-template-columns:minmax(0,1fr)}}
+.memo-sec h3{font:600 12px/1.4 var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:3px 0 0}
+.memo-sec .body{font:16px/1.6 var(--display);font-weight:400;max-width:68ch;display:grid;gap:8px}
+.memo-sec .body p{margin:0}
+.memo-sec ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.memo-sec b{font-weight:700}
+.memo .params{font:12px/1.5 var(--mono);color:var(--muted);margin:10px 0 0}
+.copyok{font-size:12.5px;color:var(--good);margin-left:4px}
+
+canvas{width:100%;display:block;touch-action:pan-y}
+.chartbox{position:relative}
+.tip{position:absolute;pointer-events:none;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:14px;line-height:1.4;box-shadow:0 2px 8px rgba(0,0,0,.12);white-space:nowrap;font-variant-numeric:tabular-nums;z-index:2}
+.legend{display:flex;gap:6px 18px;flex-wrap:wrap;font-size:14px;color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px;border-radius:2px}
+.legend i.sq{height:10px;width:10px;opacity:.5}
+.charts{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.charthead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.charthead h2{margin:0}
+.charthead label{display:flex;gap:6px;align-items:baseline;min-width:0;max-width:100%;font-size:13px;color:var(--muted)}
+.charthead select{min-width:0;flex:0 1 auto;width:auto;font-size:14px}
+.charthead label{white-space:nowrap}
+select{font:13px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:4px 6px;max-width:100%}
+.note{color:var(--muted);font-size:13px;max-width:80ch;margin:8px 0 0}
+
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px}
+td.need{font-family:var(--mono);font-variant-numeric:tabular-nums;text-align:right;min-width:12ch}
+td.num,th.num{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+tr.mine td{background:var(--accent-soft)}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--bg)}
+.tbl{overflow-x:auto}
+.chip{display:inline-block;font-size:12px;border-radius:999px;padding:1px 8px;white-space:nowrap;border:1px solid}
+.chip.ok{background:var(--good-soft);border-color:var(--good);color:var(--ink)}
+.chip.mid{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
+.chip.hard{background:var(--bad-soft);border-color:var(--bad);color:var(--ink)}
+.chip.na{background:var(--bg);border-color:var(--line);color:var(--muted)}
+a{color:var(--accent)}
+details summary{cursor:pointer;font-weight:600}
+details .plain{display:grid;gap:10px;max-width:75ch;margin-top:10px}
+details .plain p{margin:0}
+.formula{font-family:var(--mono);font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow-x:auto;white-space:pre;line-height:1.6;margin-top:12px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Доверие и регулирование: модель Кыргызстана</h1>
+    <p>Расширенная модель Агьона, Алгана, Каюка и Шлейфера (2010), откалиброванная по данным Кыргызстана. Выберите сценарий или настройте решения слева. Справа появится заключение простым языком: к чему приведёт выбор, почему, насколько вывод надёжен и что отслеживать. Модель иллюстративная: она показывает направления и пороги, а не точный прогноз.</p>
+  </header>
+
+  <div class="grid">
+    <aside class="card controls" aria-label="Параметры модели">
+      <div class="group">
+        <h2>Готовые сценарии</h2>
+        <p class="sub">Решения, доступные в 2026 году. Гильотина 2025 г. уже проведена: сейчас 496 разрешений. ИВК — индекс восприятия коррупции Transparency International: от 0 до 100, чем выше, тем меньше коррупции.</p>
+        <div class="presets" id="presets"></div>
+      </div>
+      <div class="group" id="g-policy"><h2>Решения</h2></div>
+      <div class="group" id="g-data"><h2>Исходные данные</h2><p class="sub">Откалиброваны по международным индексам. Меняйте, если есть свежие данные.</p></div>
+      <div class="group" id="g-struct"><h2>Допущения модели</h2><p class="sub">Не измерены напрямую. Их неопределённость учтена в оценке надёжности.</p></div>
+    </aside>
+
+    <main class="right">
+      <div class="verdict" id="verdict" aria-live="polite"></div>
+
+      <div class="status">
+        <div class="tile"><div class="k">Доверие в 2031 г.</div><div class="v" id="t-5">–</div><div class="d" id="t-5d">через 5 лет</div></div>
+        <div class="tile"><div class="k">Доверие в 2036 г.</div><div class="v" id="t-10">–</div><div class="d" id="t-10d">через 10 лет</div></div>
+        <div class="tile"><div class="k">Честных станет большинство</div><div class="v" id="t-maj">–</div><div class="d" id="t-majd">год</div></div>
+        <div class="tile"><div class="k">Надёжность вывода</div><div class="v" id="t-rob">–</div><div class="d">доля из 300 прогонов с другими допущениями</div></div>
+      </div>
+
+      <section class="card">
+        <h2>Расстояние до порога доверия</h2>
+        <div class="gauge" id="gauge"></div>
+        <p class="gaptext" id="gaptext"></p>
+      </section>
+
+      <section class="card memo" id="memo">
+        <div class="memo-head">
+          <div><h2>Заключение по сценарию</h2><p class="title" id="memo-title"></p></div>
+          <div><button type="button" class="btn" id="copy">Скопировать текст заключения</button><span class="copyok" id="copyok" hidden>Скопировано</span></div>
+        </div>
+        <div id="memo-body"></div>
+        <p class="params" id="memo-params"></p>
+      </section>
+
+      <div class="charts">
+        <section class="card">
+          <div class="charthead"><h2>Траектория 2026–2086</h2>
+            <label>Сравнить с: <select id="cmp"></select></label></div>
+          <div class="chartbox"><canvas id="traj" height="460" aria-label="График доверия и числа разрешений по годам"></canvas><div class="tip" id="tip-traj" hidden></div></div>
+          <div class="legend">
+            <span><i style="background:var(--alpha)"></i>доверие, % (левая шкала)</span>
+            <span><i class="sq" style="background:var(--alpha)"></i>разброс доверия, 80% прогонов</span>
+            <span><i style="background:var(--reg)"></i>разрешений (правая шкала)</span>
+            <span><i style="background:var(--muted);height:1px"></i>порог доверия</span>
+            <span><i style="background:var(--muted);opacity:.5"></i>сценарий сравнения</span>
+          </div>
+        </section>
+        <section class="card">
+          <h2>Карта исходов</h2>
+          <div class="chartbox"><canvas id="phase" height="500" aria-label="Фазовая карта: куда приходит общество из каждой стартовой точки"></canvas><div class="tip" id="tip-phase" hidden></div></div>
+          <div class="legend"><span><i class="sq" style="background:var(--alpha)"></i>приходит к доверию</span><span><i class="sq" style="background:var(--reg)"></i>остаётся в зарегулированности</span><span>● старт сегодня</span></div>
+          <p class="note">Каждая клетка — другое стартовое сочетание доверия и числа разрешений при выбранных решениях, включая мораторий и сроки реформ. Чёрная линия — граница между исходами. Наведите курсор, чтобы увидеть исход для точки.</p>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>Сколько нужно, чтобы сценарий сработал</h2>
+        <p class="note" style="margin:0 0 10px">Каждая строка меняет только один рычаг, остальные остаются как в ваших настройках. Сработал — значит, к 2086 г. честных больше половины. Оценка реалистичности ориентировочная.</p>
+        <div class="tbl"><table id="dose"><thead><tr><th>Рычаг</th><th class="num">Сейчас</th><th class="num">Нужно</th><th>Что это значит</th><th>Реалистичность</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card">
+        <h2>Сравнение сценариев</h2>
+        <p class="note" style="margin:0 0 10px">Нажмите на строку, чтобы загрузить сценарий.</p>
+        <div class="tbl"><table id="cmpt"><thead><tr><th>Сценарий</th><th class="num">Доверие 2031</th><th class="num">Доверие 2036</th><th class="num">Большинство честных</th><th class="num">Разрешений 2036</th><th class="num">Надёжность</th></tr></thead><tbody></tbody></table></div>
+      </section>
+
+      <section class="card">
+        <h2>Как устроена модель</h2>
+        <details open>
+          <summary>Объяснение простым языком</summary>
+          <div class="plain">
+            <p><b>Две силы тянут общество в разные стороны.</b> Когда люди мало доверяют друг другу, они просят государство ввести больше правил и разрешений. Но каждое правило в руках нечестного чиновника становится поводом для незаконного заработка: за выдачу разрешения можно потребовать взятку. Чем больше правил и чем больше коррупции, тем выгоднее обходить закон, а не соблюдать его. Нечестных становится больше, доверие падает, и правил требуют ещё больше. Это ловушка «мало доверия, много правил».</p>
+            <p><b>Обратный круг тоже возможен.</b> Если честных людей достаточно много, честность приносит репутацию и выгоду от сотрудничества. Спрос на контроль падает, правил становится меньше, поводов для взяток тоже, и доверие растёт дальше.</p>
+            <p><b>Порог доверия</b> разделяет эти два круга. Ниже порога общество само скатывается в ловушку, выше — само выходит к доверию. Реформы работают двумя путями: опускают порог (антикоррупция, автоматизация, сильные суды) или удерживают правила низкими, пока доверие не перейдёт порог (мораторий).</p>
+            <p><b>Правила легко ввести и трудно отменить (эффект храповика).</b> Храповик — механизм, который крутится только в одну сторону, как трещотка гаечного ключа. С правилами так же: новые вводятся быстро (за год закрывается 30% разрыва со спросом), а отменяются медленно (3% в год). Поэтому разовое сокращение разрешений без защиты быстро отыгрывается назад.</p>
+            <p><b>Защита от отката — мораторий.</b> Чтобы реформа не откатилась, нужен свой защитный механизм: запрет на новые разрешения на несколько лет. Он даёт доверию время перейти порог, после которого спрос на новые правила сам падает.</p>
+            <p><b>Надёжность.</b> Часть параметров — допущения. Модель 300 раз пересчитывает сценарий, случайно меняя наказание и выгоду от честной репутации (±25%), незаконный доход чиновника с одного правила (±15%), исполнение законов (±0,03), скорости введения и отмены правил (±50%) и стартовое доверие (ошибка опроса около 1 п.п.). Надёжность — доля прогонов, в которых сценарий сработал.</p>
+          </div>
+        </details>
+        <div class="formula">q = K / (K + R·(1−α))              шанс, что нарушение выявят и накажут
+c = (1−α)·(1−m)                     доля коррумпированных чиновников, m = ИВК/100 (индекс восприятия коррупции)
+g = (1 − 0,5·EGDI)·(1 − w)          незаконный доход с одного правила, w — доля автовыдачи
+Δ = R·[c·g − q·(1−c)·F] − s·α        выгода нечестного поведения над честным
+α(t+1) = α − (α−0,05)·(0,95−α)·Δ     честных становится больше, если Δ &lt; 0
+R → 1−α: вверх на 30% разрыва в год, вниз на 3% (правила легко ввести, трудно отменить); при моратории R не растёт
+m, K, w идут к целевым значениям линейно за выбранный срок реформ</div>
+      </section>
+
+      <section class="card">
+        <h2>Откуда взяты стартовые числа</h2>
+        <div class="tbl"><table>
+          <thead><tr><th>Параметр</th><th class="num">Значение</th><th>Источник и перевод в модель</th></tr></thead>
+          <tbody>
+            <tr><td>α, доверие</td><td class="num">11,8%</td><td>World Values Survey, волна 7 (2019–2020): 11,8% ответили «большинству людей можно доверять» (16,7% в 2003 г.). Замер сделан до гильотины. Выборка около 1200 человек, ошибка около ±2 п.п.</td></tr>
+            <tr><td>m, честность аппарата</td><td class="num">26</td><td>Индекс восприятия коррупции Transparency International 2025: 26 из 100 (142-е место). m = ИВК/100.</td></tr>
+            <tr><td>K, исполнение законов</td><td class="num">0,45</td><td>World Justice Project Rule of Law Index 2024: 0,45 (101-е место).</td></tr>
+            <tr><td>R, объём регулирования</td><td class="num">905 → 496</td><td>Разрешительных документов было 905, после «регуляторной гильотины» 2025 г. осталось 496. R = число/1000. Все разрешения считаются равнозначными, хотя отменены могли быть самые малозначимые; тогда эффект гильотины завышен.</td></tr>
+            <tr><td>g, незаконный доход с одного правила</td><td class="num">0,63</td><td>g = (1 − 0,5·EGDI)·(1 − w). Индекс электронного правительства ООН 2024: 0,7316. Сам по себе EGDI почти не даёт рычага: для перелома его пришлось бы поднять до 1,0. Поэтому добавлен измеримый рычаг w — доля разрешений, которые выдаются автоматически, без контакта с чиновником. Старт w = 0% — допущение.</td></tr>
+            <tr><td>F, s, γ, скорости введения и отмены правил</td><td class="num">2; 0,6; 1; 30%/3%</td><td>Допущения, а не данные. Их разброс учтён в оценке надёжности.</td></tr>
+          </tbody>
+        </table></div>
+        <p class="note">Источники: <a href="https://datacatalog.ihsn.org/catalog/12280/variable/F1/V93?name=Q57">WVS-7 Кыргызстан</a>, <a href="https://tradingeconomics.com/kyrgyzstan/corruption-index">CPI 2025</a>, <a href="https://worldjusticeproject.org/rule-of-law-index/downloads/WJPIndex2024.pdf">WJP 2024</a>, <a href="https://economist.kg/biznes/2025/10/06/rieforma-rieghuliatornoi-ghilotiny-kolichiestvo-razrieshienii-v-kr-umienshili-pochti-vdvoie/">Economist.kg о гильотине</a>, <a href="https://publicadministration.un.org/egovkb/en-us/Data/Country-Information/id/91-Kyrgyzstan">UN EGDI 2024</a>, <a href="https://www.nber.org/papers/w14648.pdf">Aghion et al., NBER WP 14648</a>.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+/*MODEL*/
+const AMIN=0.05, AMAX=0.95, T=60, Y0=2026, NMC=300;
+const BASE={a0:11.8,cpi:26,wjp:0.45,egdi:0.73,permits:496,hold:0,cpiT:26,autoT:0,wjpT:0.45,ramp:5,F:2,s:0.6,up:0.3,down:0.03};
+const PRESETS=[
+ ['Ничего не делать',{}],
+ ['Мораторий на 10 лет',{hold:10}],
+ ['Антикоррупция: ИВК 40 за 7 лет',{cpiT:40,ramp:7}],
+ ['Автовыдача 30% разрешений за 5 лет',{autoT:30,ramp:5}],
+ ['Комплекс: мораторий 5 лет + ИВК 30 + автовыдача 10%',{hold:5,cpiT:30,autoT:10,ramp:5}],
+ ['Откат: вернуть 905 разрешений',{permits:905}],
+];
+function prAt(p,t){
+  const k=p.ramp>0?Math.min(1,t/p.ramp):1;
+  const cpi=p.cpi+(p.cpiT-p.cpi)*k, K=p.wjp+(p.wjpT-p.wjp)*k+(p.kadd||0), w=p.autoT/100*k;
+  return {m:cpi/100,K:Math.max(0.05,K),g:(1-0.5*p.egdi)*(1-w)*(p.gmul||1),F:p.F,s:p.s,up:p.up,down:p.down};
+}
+function delta(a,R,pr){
+  const q=pr.K/(pr.K+R*(1-a)), c=(1-a)*(1-pr.m);
+  const rent=R*c*pr.g, pun=R*q*(1-c)*pr.F, soc=pr.s*a;
+  return {q,c,rent,pun,soc,d:rent-pun-soc};
+}
+function stepA(a,d){return Math.min(AMAX,Math.max(AMIN,a+(a-AMIN)*(AMAX-a)*(-d)));}
+function stepR(R,a,pr,frozen){
+  const Rs=Math.min(1,Math.max(0.05,1-a));
+  return frozen? R-pr.down*Math.max(R-Rs,0) : R+pr.up*Math.max(Rs-R,0)-pr.down*Math.max(R-Rs,0);
+}
+function run(p,steps=T,a0=p.a0/100,R0=p.permits/1000){
+  let a=a0,R=R0;const A=[a],RR=[R];
+  for(let t=0;t<steps;t++){
+    const pr=prAt(p,t);const {d}=delta(a,R,pr);
+    a=stepA(a,d);R=stepR(R,a,pr,t<p.hold);A.push(a);RR.push(R);
+  }
+  return {A,R:RR};
+}
+const ok=s=>s.A[s.A.length-1]>0.5;
+const yearMaj=s=>s.A.findIndex(a=>a>0.5);
+function thrStatic(pr){
+  const f=a0=>{let a=a0,R=Math.min(1,1-a0);for(let t=0;t<200;t++){const {d}=delta(a,R,pr);a=stepA(a,d);R=stepR(R,a,pr,false);}return a>0.5;};
+  if(f(0.06))return 0.06; if(!f(0.94))return null;
+  let lo=0.06,hi=0.94;for(let i=0;i<14;i++){const mid=(lo+hi)/2;if(f(mid))hi=mid;else lo=mid;}
+  return hi;
+}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const DRAWS=(()=>{const r=mulberry(20261109),U=(a,b)=>a+(b-a)*r(),out=[];
+  for(let i=0;i<NMC;i++){const n=Math.sqrt(-2*Math.log(r()||1e-9))*Math.cos(2*Math.PI*r());
+    out.push({F:U(.75,1.25),s:U(.75,1.25),gmul:U(.85,1.15),kadd:U(-.03,.03),up:U(.5,1.5),down:U(.5,1.5),da:0.01*n});}
+  return out;})();
+const drawP=(p,d)=>({...p,F:p.F*d.F,s:p.s*d.s,gmul:d.gmul,kadd:d.kadd,up:Math.min(1,p.up*d.up),down:Math.min(1,p.down*d.down)});
+function mc(p,bands){
+  let succ=0;const cols=bands?Array.from({length:T+1},()=>[]):null;
+  for(const d of DRAWS){const s=run(drawP(p,d),T,Math.max(0.06,p.a0/100+d.da));if(ok(s))succ++;if(bands)s.A.forEach((a,t)=>cols[t].push(a));}
+  const res={share:succ/NMC};
+  if(bands){const q=(arr,x)=>{arr.sort((a,b)=>a-b);return arr[Math.floor(x*(arr.length-1))];};
+    res.p10=cols.map(c=>q(c,.1));res.p50=cols.map(c=>q(c,.5));res.p90=cols.map(c=>q(c,.9));}
+  return res;
+}
+function thrRange(p){
+  const v=[];for(let i=0;i<40;i++){const t=thrStatic(prAt(drawP(p,DRAWS[i]),1e9));v.push(t===null?0.95:t);}
+  v.sort((a,b)=>a-b);return [v[4],v[35]];
+}
+function seq(a,b,s){const o=[];const n=Math.round((b-a)/s);for(let i=0;i<=n;i++)o.push(+(a+i*s).toFixed(4));return o;}
+function minDose(p){
+  const scan=(key,vals)=>{for(const v of vals)if(ok(run({...p,[key]:v})))return v;return null;};
+  return {
+    hold:scan('hold',seq(0,30,1)),
+    cpiT:scan('cpiT',seq(5,90,1)),
+    autoT:scan('autoT',seq(0,100,1)),
+    wjpT:scan('wjpT',seq(0.2,0.95,0.01)),
+    permits:scan('permits',seq(1000,50,-10)),
+  };
+}
+function levers(p){
+  return [
+    {name:'мораторий на новые разрешения',active:p.hold>0,neutral:{hold:0}},
+    {name:'антикоррупционная реформа',active:p.cpiT>p.cpi,neutral:{cpiT:p.cpi}},
+    {name:'автоматическая выдача разрешений',active:p.autoT>0,neutral:{autoT:0}},
+    {name:'укрепление судов и инспекций',active:p.wjpT>p.wjp,neutral:{wjpT:p.wjp}},
+    {name:'сокращение числа разрешений (гильотина)',active:p.permits<905,neutral:{permits:905}},
+  ].filter(l=>l.active).map(l=>{const s=run({...p,...l.neutral});return {...l,okWithout:ok(s),majWithout:yearMaj(s)};});
+}
+function rebound(p,s){
+  const t0=Math.min(p.hold,T-3);const r0=s.R[t0],r3=s.R[t0+3];
+  return r3-r0>0.06?{t0,from:Math.round(r0*1000),to:Math.round(r3*1000)}:null;
+}
+/*ENDMODEL*/
+
+const fmt=(x,d=2)=>x.toFixed(d).replace('.',',').replace('-','−');
+const pc=(x,d=1)=>fmt(x*100,d)+'%';
+const perm=R=>Math.round(R*1000);
+function yw(n){const a=Math.abs(n)%100,b=a%10;return (a>10&&a<20)?'лет':b===1?'год':(b>=2&&b<=4)?'года':'лет';}
+const yrs=n=>n+' '+yw(n);
+
+const CTRL=[
+ {g:'g-policy',id:'permits',l:'Число разрешительных документов',min:50,max:1000,step:1,h:'Сейчас 496 (после гильотины 2025 г.), до неё было 905',f:v=>String(v)},
+ {g:'g-policy',id:'hold',l:'Мораторий на новые разрешения',min:0,max:30,step:1,h:'Сколько лет число разрешений не может расти. 0 — моратория нет',f:v=>v?yrs(v):'нет'},
+ {g:'g-policy',id:'cpiT',l:'Цель по индексу восприятия коррупции (ИВК)',min:5,max:90,step:1,h:'Антикоррупционная реформа: каким станет индекс',f:v=>v+' из 100'},
+ {g:'g-policy',id:'autoT',l:'Автоматическая выдача разрешений',min:0,max:100,step:1,h:'Доля разрешений, которые выдаются без контакта с чиновником, по данным реестров',f:v=>v+'%'},
+ {g:'g-policy',id:'wjpT',l:'Цель по индексу верховенства права (WJP)',min:0.2,max:0.95,step:0.01,h:'Суды, инспекции, реестры',f:v=>fmt(v,2)},
+ {g:'g-policy',id:'ramp',l:'Срок выхода реформ на цель',min:0,max:15,step:1,h:'За сколько лет ИВК, автовыдача и WJP достигают цели. 0 — мгновенно',f:v=>v?yrs(v):'сразу'},
+ {g:'g-data',id:'a0',l:'Доверяют большинству людей',min:5,max:60,step:0.1,h:'WVS-7, 2019–2020: 11,8%',f:v=>fmt(v,1)+'%'},
+ {g:'g-data',id:'cpi',l:'Индекс восприятия коррупции (ИВК) сегодня',min:5,max:90,step:1,h:'Transparency International 2025: 26',f:v=>v+' из 100'},
+ {g:'g-data',id:'wjp',l:'Индекс верховенства права (WJP) сегодня',min:0.2,max:0.95,step:0.01,h:'World Justice Project 2024: 0,45',f:v=>fmt(v,2)},
+ {g:'g-data',id:'egdi',l:'Индекс электронного правительства ООН (EGDI)',min:0.2,max:1,step:0.01,h:'ООН 2024: 0,73',f:v=>fmt(v,2)},
+ {g:'g-struct',id:'F',l:'Наказание при поимке',min:0.5,max:4,step:0.1,h:'Во сколько раз потеря пойманного больше незаконного дохода. 2 — теряет вдвое больше, чем получил бы',f:v=>fmt(v,1)},
+ {g:'g-struct',id:'s',l:'Социальная выгода честности',min:0,max:1.5,step:0.05,h:'Репутация и сотрудничество; растёт, когда честных много',f:v=>fmt(v,2)},
+ {g:'g-struct',id:'up',l:'Скорость введения правил',min:0.01,max:0.6,step:0.01,h:'Какая доля разрыва со спросом на правила закрывается за год',f:v=>Math.round(v*100)+'% в год'},
+ {g:'g-struct',id:'down',l:'Скорость отмены правил',min:0,max:0.6,step:0.01,h:'Обычно намного ниже скорости введения',f:v=>Math.round(v*100)+'% в год'},
+];
+const P={...BASE};
+let current=0;
+
+function build(){
+  for(const c of CTRL){
+    const box=document.createElement('div');box.className='ctl';
+    box.innerHTML=`<div class="top"><label for="${c.id}">${c.l}</label><output id="o-${c.id}" for="${c.id}"></output></div>
+      <input type="range" id="${c.id}" min="${c.min}" max="${c.max}" step="${c.step}" value="${P[c.id]}"><small>${c.h}</small>`;
+    document.getElementById(c.g).appendChild(box);
+    box.querySelector('input').addEventListener('input',e=>{
+      const v=+e.target.value, old=P[c.id];
+      if(c.id==='cpi'&&P.cpiT===old){P.cpiT=v;document.getElementById('cpiT').value=v;}
+      if(c.id==='wjp'&&Math.abs(P.wjpT-old)<1e-9){P.wjpT=v;document.getElementById('wjpT').value=v;}
+      P[c.id]=v;current=null;markPreset();schedule();
+    });
+  }
+  const pr=document.getElementById('presets'), cmp=document.getElementById('cmp');
+  PRESETS.forEach(([name],i)=>{
+    const b=document.createElement('button');b.type='button';b.textContent=name;b.dataset.i=i;
+    b.addEventListener('click',()=>loadPreset(i));pr.appendChild(b);
+    const o=document.createElement('option');o.value=i;o.textContent=name;cmp.appendChild(o);
+  });
+  const o=document.createElement('option');o.value='-1';o.textContent='не сравнивать';cmp.appendChild(o);
+  cmp.addEventListener('change',schedule);
+  document.getElementById('copy').addEventListener('click',copyMemo);
+  markPreset();
+}
+function loadPreset(i){Object.assign(P,BASE,PRESETS[i][1]);for(const c of CTRL)document.getElementById(c.id).value=P[c.id];current=i;markPreset();schedule();}
+function markPreset(){document.querySelectorAll('#presets button').forEach(b=>b.classList.toggle('on',+b.dataset.i===current));}
+
+let pending=false;
+function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;update();});}
+
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+function setupCanvas(cv){
+  if(!cv.dataset.h)cv.dataset.h=cv.getAttribute('height');
+  const dpr=window.devicePixelRatio||1, w=cv.clientWidth, h=+cv.dataset.h;
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+  cv.style.height=h+'px';
+  const ctx=cv.getContext('2d');ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,cv.width,cv.height);ctx.globalAlpha=1;ctx.setLineDash([]);ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w,h};
+}
+
+/* ---------- state computed on each update ---------- */
+let S=null;
+function compute(){
+  const sim=run(P), m=mc(P,true);
+  const cmpI=+document.getElementById('cmp').value;
+  const cmp=cmpI>=0?run({...BASE,...PRESETS[cmpI][1]}):null;
+  const thrNow=thrStatic(prAt(P,0)), thrAfter=thrStatic(prAt(P,1e9));
+  const thrCurve=[];for(let t=0;t<=T;t++){thrCurve.push(t>P.ramp&&t>0?thrCurve[t-1]:thrStatic(prAt(P,t)));}
+  return {sim,m,cmp,cmpI,thrNow,thrAfter,thrCurve,range:thrRange(P),dose:minDose(P),lev:levers(P),reb:rebound(P,sim),
+    speedSlow:P.ramp<15&&(P.cpiT!==P.cpi||P.autoT>0||P.wjpT!==P.wjp)?ok(run({...P,ramp:Math.min(15,P.ramp+5)})):null,
+    bal0:delta(P.a0/100,P.permits/1000,prAt(P,0)),bal5:delta(sim.A[5],sim.R[5],prAt(P,5))};
+}
+
+function update(){
+  for(const c of CTRL){const o=document.getElementById('o-'+c.id);o.textContent=c.f(P[c.id]);o.classList.toggle('changed',Math.abs(P[c.id]-BASE[c.id])>1e-9);}
+  S=compute();
+  const {sim,m}=S, good=ok(sim), maj=yearMaj(sim);
+  // tiles
+  const tile=(id,t)=>{document.getElementById(id).textContent=pc(sim.A[t]);document.getElementById(id+'d').textContent=`сегодня ${pc(sim.A[0])} · разрешений ${perm(sim.R[t])}`;};
+  tile('t-5',5);tile('t-10',10);
+  document.getElementById('t-maj').textContent=maj>=0?String(Y0+maj):'не наступает';
+  document.getElementById('t-majd').textContent=maj>=0?`через ${yrs(maj)}`:'до 2086 г.';
+  const rob=document.getElementById('t-rob');rob.textContent=Math.round(m.share*100)+'%';
+  rob.style.color=css(m.share>=0.8||m.share<=0.2?(good?'--good':'--bad'):'--warn');
+  // verdict
+  const v=document.getElementById('verdict');v.className='verdict '+(good?'good':'bad');
+  const vname=current!==null?`«${PRESETS[current][0]}»`:'Ваш сценарий';
+  const vlab=current!==null?'Готовый сценарий':'Настройки изменены вручную';
+  v.innerHTML=good
+    ?`<span class="vname">${vlab}</span><b>${current!==null?'Сценарий '+vname:vname} выводит общество к доверию</b><span>${maj>=0?`Честных станет большинство к ${Y0+maj} г.`:''} Надёжность вывода ${Math.round(m.share*100)}%. Подробности — в заключении ниже.</span>`
+    :`<span class="vname">${vlab}</span><b>${current!==null?'Сценарий '+vname:vname} не выводит из ловушки зарегулированности</b><span>К 2036 г. доверие ${pc(sim.A[10])}, разрешений ${perm(sim.R[10])}. Что нужно изменить — в заключении ниже.</span>`;
+  drawGauge();renderMemo();renderDose();renderCompare();drawTraj();drawPhase();
+}
+
+/* ---------- gauge ---------- */
+function drawGauge(){
+  const g=document.getElementById('gauge'), MAX=0.4, X=x=>Math.min(100,Math.max(0,x/MAX*100));
+  const a=P.a0/100, tn=S.thrNow, ta=S.thrAfter, [r0,r1]=S.range;
+  const lab=(x,txt,cls,col)=>`<div class="mark" style="left:${X(x)}%;background:${col}"></div><div class="lab ${cls}" style="left:${Math.min(88,Math.max(10,X(x)))}%;color:${col}">${txt}</div>`;
+  let h=`<div class="bar"></div><div class="band" style="left:${X(r0)}%;width:${Math.max(0.5,X(r1)-X(r0))}%"></div>`;
+  for(let x=0;x<=MAX+1e-9;x+=0.1)h+=`<div class="ax" style="left:${X(x)}%">${Math.round(x*100)}%</div>`;
+  const tnTxt=tn===null?'порога нет':`порог сегодня ${pc(tn)}`;
+  h+=lab(a,`<b>доверие ${pc(a)}</b>`,'up',css('--alpha'));
+  let deep=false;
+  if(ta!==null&&tn!==null&&Math.abs(ta-tn)>0.004){h+=lab(Math.min(tn,MAX),tnTxt,'dn',css('--muted'));
+    const far=d=>Math.abs(X(Math.min(ta,MAX))-X(Math.min(d,MAX)))>22;
+    const row=far(a)?'up':far(tn)?'dn':(deep=true,'dn2');
+    h+=lab(Math.min(ta,MAX),`после реформ ${pc(ta)}`,row,css('--ink'));}
+  else if(tn!==null)h+=lab(Math.min(tn,MAX),tnTxt,'dn',css('--ink'));
+  g.innerHTML=h;g.classList.toggle('deep',deep);
+  const t=ta??tn, gap=t===null?null:t-a;
+  let txt;
+  if(t===null)txt='При этих параметрах общество не выходит к доверию ни с какого стартового уровня: правила всегда выигрывают.';
+  else if(gap>0)txt=`Чтобы общество само двигалось к доверию, доля честных должна быть выше <b>${pc(t)}</b>${ta!==null&&tn!==null&&Math.abs(ta-tn)>0.004?' (с учётом реформ)':''}. Сейчас ${pc(a)}, <b>не хватает ${fmt(gap*100,1)} п.п.</b> С учётом неопределённости допущений порог лежит в диапазоне ${pc(r0,0)}–${pc(r1,0)} (серая полоса).${P.hold>0?' Мораторий может перевести общество через порог, если удержит правила достаточно долго.':''}`;
+  else txt=`Сегодняшнее доверие ${pc(a)} выше порога ${pc(t)}${ta!==null&&tn!==null&&Math.abs(ta-tn)>0.004?' с учётом реформ':''}: запас ${fmt(-gap*100,1)} п.п. С учётом неопределённости порог лежит в диапазоне ${pc(r0,0)}–${pc(r1,0)}.`;
+  document.getElementById('gaptext').innerHTML=txt;
+}
+
+/* ---------- plain-language conclusion ---------- */
+const DOSE=[
+ {k:'hold',name:'Мораторий на новые разрешения',cur:p=>p.hold?yrs(p.hold):'нет',
+  need:v=>v===0?'не нужен':yrs(v),
+  what:(v,p)=>v===0?'Сценарий работает и без моратория.':`Запретить рост числа разрешений на ${yrs(v)}. Это один закон; риск — исключения и обходные «уведомления».`,
+  feas:v=>v<=10?'ok':v<=20?'mid':'hard'},
+ {k:'cpiT',name:'Антикоррупция: цель по индексу восприятия коррупции (ИВК)',cur:p=>p.cpiT+' из 100',
+  need:(v,p)=>v<=p.cpi?'текущего уровня достаточно':v+' из 100',
+  what:(v,p)=>{if(v<=p.cpi)return `Достаточно не допустить падения ИВК ниже ${v}.`;const r=(v-p.cpi)/Math.max(1,p.ramp);return `Поднять ИВК на ${v-p.cpi} п. за ${P.ramp?yrs(P.ramp):'год'}, то есть на ${fmt(r,1)} п. в год. У самых быстрых реформаторов рост был около 2–3 п. в год.`;},
+  feas:(v,p)=>{if(v<=p.cpi)return 'ok';const r=(v-p.cpi)/Math.max(1,p.ramp);return r<=2?'ok':r<=4?'mid':'hard';}},
+ {k:'autoT',name:'Автоматическая выдача разрешений',cur:p=>p.autoT+'%',
+  need:v=>v===0?'не нужна':v+'%',
+  what:v=>v===0?'Сценарий работает и без автоматизации.':`Перевести ${v}% разрешений на выдачу без участия чиновника: по данным реестров, проактивно или по уведомлению.`,
+  feas:v=>v<=30?'ok':v<=60?'mid':'hard'},
+ {k:'wjpT',name:'Индекс верховенства права (WJP)',cur:p=>fmt(p.wjpT,2),
+  need:(v,p)=>v<=p.wjp?'текущего уровня достаточно':fmt(v,2),
+  what:(v,p)=>v<=p.wjp?'Укреплять суды для этого исхода не обязательно, хотя полезно.':`Поднять индекс с ${fmt(p.wjp,2)} до ${fmt(v,2)}. Индекс обычно меняется на 0,01–0,02 в год, так что это долгий рычаг.`,
+  feas:(v,p)=>{const d=v-p.wjp;return d<=0.05?'ok':d<=0.12?'mid':'hard';}},
+ {k:'permits',name:'Число разрешений',cur:p=>String(p.permits),
+  need:v=>'не больше '+v,
+  what:(v,p)=>v>=p.permits?`Можно держать до ${v} разрешений.`:`Сократить до ${v} разрешений${p.hold?'':', но без моратория новые правила быстро возвращаются'}.`,
+  feas:v=>v>=300?'ok':v>=150?'mid':'hard'},
+];
+const FEAS={ok:'реалистично',mid:'трудно',hard:'почти недостижимо',na:'не помогает'};
+
+function memoSections(){
+  const {sim,m,lev,reb,dose,bal0,bal5}=S, good=ok(sim), maj=yearMaj(sim);
+  const a0=sim.A[0], a5=sim.A[5], a10=sim.A[10], a60=sim.A[T];
+  const out=[];
+  // 1. what happens
+  let p1;
+  if(good){
+    p1=`Доля людей, которые ведут себя честно без надзора, вырастет с <b>${pc(a0)}</b> сегодня до <b>${pc(a5)}</b> в 2031 г. и <b>${pc(a10)}</b> в 2036 г. ${maj>=0?`Честных станет большинство примерно к <b>${Y0+maj} г.</b>`:''} ${(()=>{const pk=Math.max(...sim.R),tp=sim.R.indexOf(pk);return pk>sim.R[0]+0.03?`Число разрешительных документов сначала вырастет до ${perm(pk)} (пик около ${Y0+tp} г.), а затем снизится до ${perm(sim.R[T])} к концу горизонта.`:`Число разрешительных документов постепенно снизится с ${perm(sim.R[0])} до ${perm(sim.R[T])} к концу горизонта.`;})()}`;
+    if(a5<a0)p1+=` Первые годы доверие почти не растёт или даже снижается: результат будет виден не сразу, и это важно учесть в коммуникации.`;
+  }else{
+    p1=`Доля честных снизится с <b>${pc(a0)}</b> сегодня до <b>${pc(a10)}</b> в 2036 г.${a5>a0?` (в первые годы она немного растёт, до ${pc(Math.max(...sim.A.slice(0,11)))}, но затем падает)`:''}. Число разрешений вырастет с ${perm(sim.R[0])} до <b>${perm(sim.R[10])}</b> к 2036 г. Общество закрепится в равновесии «мало доверия, много правил».`;
+  }
+  out.push({h:'Что произойдёт',p:[p1]});
+  // 2. why
+  const why=[];
+  const bal=b=>`ожидаемый доход от обхода правил ${fmt(b.rent,2)} против ожидаемого наказания ${fmt(b.pun,2)} и одобрения честности ${fmt(b.soc,2)} (в условных единицах)`;
+  if(good){
+    if(S.thrAfter!==null&&S.thrAfter<a0&&S.thrNow!==null&&S.thrNow>a0)why.push(`Реформы опускают порог доверия с ${pc(S.thrNow)} до ${pc(S.thrAfter)}, и сегодняшний уровень оказывается выше него. Дальше общество движется к доверию само.`);
+    else if(S.thrNow!==null&&S.thrNow<=a0)why.push(`Сегодняшнее доверие уже выше порога ${pc(S.thrNow)} при этих параметрах, поэтому общество движется к доверию само.`);
+    else if(P.hold>0)why.push(`Мораторий удерживает число правил низким ${yrs(P.hold)}. За это время доверие успевает перейти порог, и после окончания моратория спрос на новые правила уже не растёт.`);
+    if(lev.length){
+      const need=lev.filter(l=>!l.okWithout), extra=lev.filter(l=>l.okWithout);
+      if(need.length)why.push(`Без следующих элементов сценарий не работает, это его опора: <b>${need.map(l=>l.name).join('; ')}</b>.`);
+      if(extra.length)why.push(`${extra.length>1?'По одному (но не все сразу) можно убрать':'Можно убрать'} без потери результата: ${extra.map(l=>{const d=l.majWithout>=0&&maj>=0?l.majWithout-maj:null;return l.name+(d>0?` (но перелом наступит на ${yrs(d)} позже)`:'');}).join('; ')}.`);
+    }
+    why.push(`Через 5 лет баланс такой: ${bal(bal5)}. Честность ${bal5.d<0?'выгоднее':'пока не выгоднее'} обхода правил.`);
+  }else{
+    if(reb)why.push(`<b>Главная причина — откат правил.</b> ${P.hold>0?`Сразу после окончания моратория в ${Y0+reb.t0} г.`:'Сразу после сокращения'} число разрешений растёт с ${reb.from} до ${reb.to} за 3 года. Когда люди мало доверяют друг другу, они требуют новых правил, а каждое новое правило даёт нечестным чиновникам ещё один повод требовать взятку.`);
+    if(S.thrNow===null)why.push('При этих параметрах порога нет: даже очень высокое доверие не удерживается.');
+    else{const t=S.thrAfter??S.thrNow;why.push(`Доверие ${pc(a0)} ниже порога ${pc(t)}${S.thrAfter!==null&&Math.abs(S.thrAfter-S.thrNow)>0.004?' (с учётом реформ)':''}, после которого общество само движется к доверию. Не хватает ${fmt((t-a0)*100,1)} п.п.`);}
+    why.push(`Сегодня ${bal(bal0)}. Обход правил ${bal0.d>0?'выгоднее честности':'пока не выгоднее честности, но по мере роста правил это меняется'}.`);
+  }
+  out.push({h:'Почему',p:why});
+  // 3. decision
+  const dec=[];
+  const doses=DOSE.map(d=>({d,v:dose[d.k]})).filter(x=>x.v!==null);
+  if(!good){
+    if(doses.length){
+      const order={ok:0,mid:1,hard:2};
+      doses.sort((a,b)=>order[a.d.feas(a.v,P)]-order[b.d.feas(b.v,P)]);
+      dec.push('Чтобы сценарий сработал, достаточно <b>одного</b> из этих шагов (остальные настройки как сейчас). Сначала самые реалистичные:');
+      dec.push('<ul>'+doses.map(x=>`<li>${x.d.what(x.v,P)} <i>(${FEAS[x.d.feas(x.v,P)]})</i></li>`).join('')+'</ul>');
+      const best=doses[0];
+      if(best.d.feas(best.v,P)!=='ok')dec.push('Ни один рычаг по отдельности не выглядит лёгким. Попробуйте сочетание: например, мораторий на несколько лет вместе с умеренной антикоррупционной реформой. Нажмите сценарий «Комплекс», чтобы начать с него.');
+    }else dec.push('Ни один рычаг по отдельности не меняет исход в пределах шкал. Нужна комбинация сильных мер или пересмотр допущений.');
+    if(P.permits<905&&!P.hold)dec.push('Важно: сокращение разрешений без защиты от отката почти ничего не даёт. Результат гильотины нужно закрепить законом.');
+  }else{
+    dec.push('Запас прочности: насколько можно ослабить каждый рычаг по отдельности, не потеряв результата (остальные остаются как в сценарии).');
+    const lines=DOSE.filter(d=>dose[d.k]!==null).map(d=>{
+      const v=dose[d.k];
+      if(d.k==='hold')return P.hold>0?(v===0?'Мораторий не обязателен.':`Мораторий можно сократить до ${yrs(v)}.`):null;
+      if(d.k==='cpiT')return P.cpiT>P.cpi?(v<=P.cpi?'Антикоррупционная цель не обязательна.':`ИВК достаточно поднять до ${v} (сейчас цель ${P.cpiT}).`):null;
+      if(d.k==='autoT')return P.autoT>0?(v===0?'Автоматизация не обязательна.':`Автовыдачу достаточно довести до ${v}% (сейчас цель ${P.autoT}%).`):null;
+      if(d.k==='wjpT')return P.wjpT>P.wjp?(v<=P.wjp?'Укрепление судов не обязательно для исхода.':`Индекс WJP достаточно поднять до ${fmt(v,2)}.`):null;
+      if(d.k==='permits')return v>P.permits?`Число разрешений может вырасти до ${v} без потери результата.`:null;
+      return null;}).filter(Boolean);
+    dec.push(lines.length?'<ul>'+lines.map(l=>`<li>${l}</li>`).join('')+'</ul>':'Сценарий держится на минимально необходимых значениях.');
+    if(S.speedSlow===false)dec.push(`<b>Скорость важна.</b> Если реформы растянутся ещё на 5 лет, сценарий перестанет работать: правила успеют вернуться раньше, чем реформы дадут эффект.`);
+    else if(S.speedSlow===true)dec.push('Сценарий выдерживает задержку реформ на 5 лет.');
+  }
+  out.push({h:'Что это значит для решения',p:dec});
+  // 4. reliability
+  const sh=m.share, pct=Math.round(sh*100);
+  let rel;
+  if(good)rel=sh>=0.8?`Вывод надёжный: сценарий срабатывает в <b>${pct}%</b> из 300 прогонов с другими допущениями.`:sh>=0.5?`Вывод зависит от допущений: сценарий срабатывает в <b>${pct}%</b> прогонов. Его стоит усилить, чтобы не зависеть от удачи.`:`Вывод ненадёжный: сценарий срабатывает только в <b>${pct}%</b> прогонов. В базовом расчёте он работает, но при чуть менее удачных допущениях — нет. Его нужно усилить.`;
+  else rel=sh<=0.2?`Вывод надёжный: сценарий не срабатывает в <b>${100-pct}%</b> прогонов с другими допущениями.`:`Вывод неустойчивый: в <b>${pct}%</b> прогонов сценарий всё же срабатывает. Небольшое усиление может изменить исход.`;
+  out.push({h:'Насколько можно доверять выводу',p:[rel+' Меняются наказание, выгода от честной репутации, незаконный доход чиновника с одного правила, исполнение законов, скорости введения и отмены правил, а также ошибка опроса.']});
+  // 5. monitoring
+  const mon=[];
+  const cp=[3,5,10].map(t=>`${Y0+t} г. — ${pc(m.p50[t])}`).join(', ');
+  if(good){
+    mon.push(`Контрольные точки доверия (медиана прогонов): ${cp}. Если фактическое доверие заметно ниже, сценарий не работает и его нужно усиливать.`);
+    mon.push(`Число разрешений не должно превышать ${perm(sim.R[5])} в 2031 г. и ${perm(sim.R[10])} в 2036 г. Рост выше — первый сигнал отката.`);
+  }else{
+    mon.push(`Если ничего не менять, ожидайте: в ${Y0+3} г. разрешений около ${perm(sim.R[3])}, в 2031 г. — около ${perm(sim.R[5])}. Рост числа разрешений будет первым видимым сигналом ловушки.`);
+  }
+  mon.push('Опрос World Values Survey проходит раз в 5–6 лет. Для контроля нужен ежегодный национальный опрос с тем же вопросом о доверии и ежеквартальный счёт новых разрешительных документов.');
+  out.push({h:'Что отслеживать',p:mon});
+  out.push({h:'Оговорки',p:['Модель иллюстративная: она показывает направления и пороги, а не точный прогноз. Доверие измерено в 2019–2020 гг., до гильотины. Все разрешения считаются равнозначными. Стоимость реформ и политические риски модель не учитывает, а оценки реалистичности ориентировочные.']});
+  return {title:good?`Сценарий выводит к доверию${maj>=0?` к ${Y0+maj} г.`:''}`:'Сценарий оставляет общество в ловушке зарегулированности',out};
+}
+function paramLine(){
+  return `Параметры: разрешений ${P.permits}; мораторий ${P.hold?yrs(P.hold):'нет'}; ИВК ${P.cpi}→${P.cpiT}; автовыдача ${P.autoT}%; WJP ${fmt(P.wjp,2)}→${fmt(P.wjpT,2)}; срок реформ ${P.ramp?yrs(P.ramp):'сразу'}; доверие ${fmt(P.a0,1)}%; EGDI ${fmt(P.egdi,2)}; F ${fmt(P.F,1)}; s ${fmt(P.s,2)}; введение/отмена правил ${Math.round(P.up*100)}%/${Math.round(P.down*100)}% в год.`;
+}
+function defineAbbr(out){
+  const D=[['ИВК','индекс восприятия коррупции (ИВК)'],['WJP','индекс верховенства права (WJP)'],['EGDI','индекс электронного правительства ООН (EGDI)']];
+  for(const [a,full] of D){let done=false;
+    for(const s of out){s.p=s.p.map(x=>{if(done||!x.includes(a))return x;done=true;const i=x.indexOf(a),pre=x.slice(0,i);
+      const start=/(^|<li>|[.!?]\s+|<b>)$/.test(pre);return pre+(start?full.charAt(0).toUpperCase()+full.slice(1):full)+x.slice(i+a.length);});if(done)break;}}
+  return out;
+}
+function renderMemo(){
+  const {title,out:raw}=memoSections();const out=defineAbbr(raw);
+  const name=current!==null?`«${PRESETS[current][0]}»`:'Ваш сценарий';
+  document.getElementById('memo-title').textContent=`${name}: ${title.charAt(0).toLowerCase()+title.slice(1)}`;
+  document.getElementById('memo-body').innerHTML=out.map(s=>`<div class="memo-sec"><h3>${s.h}</h3><div class="body">${s.p.map(x=>x.startsWith('<ul')?x:`<p>${x}</p>`).join('')}</div></div>`).join('');
+  document.getElementById('memo-params').textContent=paramLine();
+}
+function memoText(){
+  const strip=h=>h.replace(/<li>/g,'\n— ').replace(/<[^>]+>/g,'').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+  const {title,out:raw}=memoSections();const out=defineAbbr(raw);
+  const name=current!==null?`«${PRESETS[current][0]}»`:'Ваш сценарий';
+  return `ЗАКЛЮЧЕНИЕ ПО СЦЕНАРИЮ ${name}\n${title}\n\n`+out.map(s=>s.h.toUpperCase()+'\n'+s.p.map(strip).join('\n')).join('\n\n')+'\n\n'+paramLine()+'\nМодель «Доверие и регулирование» (по Aghion et al., 2010), расчёт '+new Date().toLocaleDateString('ru-RU')+'.';
+}
+function copyMemo(){
+  const txt=memoText(), okEl=document.getElementById('copyok');
+  const done=()=>{okEl.hidden=false;setTimeout(()=>okEl.hidden=true,2000);};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('memo'));const s=getSelection();s.removeAllRanges();s.addRange(r);okEl.textContent='Текст выделен, нажмите Ctrl+C';okEl.hidden=false;};
+  try{navigator.clipboard.writeText(txt).then(()=>{okEl.textContent='Скопировано';done();},fallback);}catch(e){fallback();}
+}
+
+/* ---------- dose & comparison tables ---------- */
+function renderDose(){
+  const tb=document.querySelector('#dose tbody');
+  tb.innerHTML=DOSE.map(d=>{const v=S.dose[d.k];
+    if(v===null)return `<tr><td>${d.name}</td><td class="num">${d.cur(P)}</td><td class="num">—</td><td>Даже максимальное значение не меняет исход.</td><td><span class="chip na">${FEAS.na}</span></td></tr>`;
+    const f=d.feas(v,P);
+    return `<tr><td>${d.name}</td><td class="num">${d.cur(P)}</td><td class="need">${d.need(v,P)}</td><td>${d.what(v,P)}</td><td><span class="chip ${f}">${FEAS[f]}</span></td></tr>`;}).join('');
+}
+function renderCompare(){
+  const rows=PRESETS.map(([n,o],i)=>({n,i,p:{...BASE,...o}}));
+  if(current===null)rows.push({n:'Ваши настройки',i:null,p:{...P}});
+  document.querySelector('#cmpt tbody').innerHTML=rows.map(r=>{
+    const s=r.i===null?S.sim:run(r.p), sh=r.i===null?S.m.share:mc(r.p,false).share, mj=yearMaj(s);
+    return `<tr class="${r.i===current?'mine ':''}${r.i!==null?'click':''}" ${r.i!==null?`data-i="${r.i}" tabindex="0"`:''}><td>${r.n}</td><td class="num">${pc(s.A[5])}</td><td class="num">${pc(s.A[10])}</td><td class="num">${mj>=0?Y0+mj:'нет'}</td><td class="num">${perm(s.R[10])}</td><td class="num">${Math.round(sh*100)}%</td></tr>`;}).join('');
+  document.querySelectorAll('#cmpt tr.click').forEach(tr=>{const go=()=>loadPreset(+tr.dataset.i);tr.addEventListener('click',go);tr.addEventListener('keydown',e=>{if(e.key==='Enter')go();});});
+}
+
+/* ---------- trajectory chart ---------- */
+let hoverT=null;
+function drawTraj(){
+  const cv=document.getElementById('traj');const {ctx,w,h}=setupCanvas(cv);
+  const L=52,Rr=56,Tp=28,B=36,W=w-L-Rr,H=h-Tp-B;
+  const X=t=>L+t/T*W, Y=v=>Tp+(1-v)*H;
+  const muted=css('--muted'),line=css('--line'),aC=css('--alpha'),rC=css('--reg'),ink=css('--ink');
+  ctx.font='14px '+css('--body');ctx.lineWidth=1;
+  if(P.hold>0){ctx.fillStyle=css('--accent-soft');ctx.fillRect(X(0),Tp,X(Math.min(P.hold,T))-X(0),H);ctx.fillStyle=muted;ctx.textAlign='left';ctx.fillText('мораторий',X(0)+4,Tp+H-6);}
+  for(let v=0;v<=1.001;v+=0.25){ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(L,Y(v));ctx.lineTo(L+W,Y(v));ctx.stroke();
+    ctx.fillStyle=aC;ctx.textAlign='right';ctx.fillText(Math.round(v*100)+'%',L-8,Y(v)+5);
+    ctx.fillStyle=rC;ctx.textAlign='left';ctx.fillText(String(Math.round(v*1000)),L+W+8,Y(v)+5);}
+  ctx.fillStyle=muted;ctx.textAlign='center';for(let t=0;t<=T;t+=10)ctx.fillText(String(Y0+t),X(t),h-10);
+  const roomy=X(10)-X(5)>48;
+  [5,10].forEach(t=>{ctx.strokeStyle=line;ctx.setLineDash([2,3]);ctx.beginPath();ctx.moveTo(X(t),Tp);ctx.lineTo(X(t),Tp+H);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle=muted;if(roomy||t===10)ctx.fillText(roomy?t+' лет':'5 и 10 лет',roomy?X(t):(X(5)+X(10))/2,Tp-8);});
+  // band
+  const m=S.m;ctx.fillStyle=aC;ctx.globalAlpha=0.15;ctx.beginPath();
+  m.p90.forEach((v,t)=>t?ctx.lineTo(X(t),Y(v)):ctx.moveTo(X(t),Y(v)));for(let t=T;t>=0;t--)ctx.lineTo(X(t),Y(m.p10[t]));ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+  // threshold curve
+  ctx.setLineDash([5,4]);ctx.strokeStyle=muted;ctx.lineWidth=1.2;ctx.beginPath();let started=false;
+  S.thrCurve.forEach((v,t)=>{if(v===null){started=false;return;}started?ctx.lineTo(X(t),Y(v)):(ctx.moveTo(X(t),Y(v)),started=true);});ctx.stroke();ctx.setLineDash([]);
+  // compare
+  const path=(arr,col,lw,dash)=>{ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.setLineDash(dash||[]);ctx.beginPath();arr.forEach((v,t)=>t?ctx.lineTo(X(t),Y(v)):ctx.moveTo(X(t),Y(v)));ctx.stroke();ctx.setLineDash([]);};
+  if(S.cmp){ctx.globalAlpha=0.5;path(S.cmp.R,rC,1.5,[6,4]);path(S.cmp.A,aC,1.5,[6,4]);ctx.globalAlpha=1;}
+  path(S.sim.R,rC,3);path(S.sim.A,aC,3);
+  [[S.sim.R,rC],[S.sim.A,aC]].forEach(([arr,c])=>{ctx.fillStyle=c;ctx.beginPath();ctx.arc(X(T),Y(arr[T]),4,0,7);ctx.fill();});
+  // rebound annotation
+  if(S.reb){const t1=S.reb.t0+3;ctx.fillStyle=rC;ctx.beginPath();ctx.arc(X(t1),Y(S.sim.R[t1]),4,0,7);ctx.fill();
+    ctx.font='600 14px '+css('--body');ctx.textAlign='left';const tx=X(t1)+8,ty=Math.min(Tp+H-8,Y(S.sim.R[t1])+18);
+    ctx.fillText(`откат: ${S.reb.from} → ${S.reb.to} разрешений за 3 года`,Math.min(tx,L+W-300),ty);}
+  // hover
+  const tip=document.getElementById('tip-traj');
+  if(hoverT!==null){const t=hoverT;ctx.strokeStyle=ink;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(X(t),Tp);ctx.lineTo(X(t),Tp+H);ctx.stroke();
+    tip.innerHTML=`<b>${Y0+t} г.</b><br>доверие ${pc(S.sim.A[t])} <span style="color:${muted}">(разброс ${pc(m.p10[t],0)}–${pc(m.p90[t],0)})</span><br>разрешений ${perm(S.sim.R[t])}${S.cmp?`<br><span style="color:${muted}">сравнение: ${pc(S.cmp.A[t])}, ${perm(S.cmp.R[t])}</span>`:''}`;
+    tip.hidden=false;const tw=tip.offsetWidth;tip.style.left=Math.max(0,Math.min(w-tw,X(t)+10))+'px';tip.style.top='28px';}
+  else tip.hidden=true;
+  cv._geo={L,W,T};
+}
+function trajHover(e){const cv=e.currentTarget,g=cv._geo;if(!g)return;const r=cv.getBoundingClientRect();
+  const t=Math.round((e.clientX-r.left-g.L)/g.W*T);hoverT=(t>=0&&t<=T)?t:null;drawTraj();}
+
+/* ---------- phase map ---------- */
+let phaseCache={key:null},phaseHover=null;
+function drawPhase(){
+  const cv=document.getElementById('phase');const {ctx,w,h}=setupCanvas(cv);
+  const L=60,Rr=18,Tp=12,B=46,W=w-L-Rr,H=h-Tp-B,N=40,ST=100;
+  const key=JSON.stringify(P)+w;
+  if(phaseCache.key!==key){
+    const cells=[];
+    for(let i=0;i<N;i++){cells.push([]);for(let j=0;j<N;j++){const a0=AMIN+(i+0.5)/N*(AMAX-AMIN),R0=0.05+(j+0.5)/N*0.95;cells[i].push(ok(run(P,ST,a0,R0)));}}
+    phaseCache={key,cells};
+  }
+  const cells=phaseCache.cells,cw=W/N,ch=H/N,gC=css('--alpha'),bC=css('--reg'),ink=css('--ink'),muted=css('--muted');
+  ctx.globalAlpha=0.28;
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){ctx.fillStyle=cells[i][j]?gC:bC;const x0=Math.round(L+i*cw),x1=Math.round(L+(i+1)*cw),y0=Math.round(Tp+H-(j+1)*ch),y1=Math.round(Tp+H-j*ch);ctx.fillRect(x0,y0,x1-x0,y1-y0);}
+  ctx.globalAlpha=1;
+  ctx.strokeStyle=ink;ctx.lineWidth=1.8;ctx.beginPath();
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+    if(i+1<N&&cells[i][j]!==cells[i+1][j]){const x=L+(i+1)*cw;ctx.moveTo(x,Tp+H-(j+1)*ch);ctx.lineTo(x,Tp+H-j*ch);}
+    if(j+1<N&&cells[i][j]!==cells[i][j+1]){const y=Tp+H-(j+1)*ch;ctx.moveTo(L+i*cw,y);ctx.lineTo(L+(i+1)*cw,y);}}
+  ctx.stroke();
+  const X=a=>L+(a-AMIN)/(AMAX-AMIN)*W, Y=R=>Tp+H-(R-0.05)/0.95*H;
+  ctx.font='14px '+css('--body');ctx.fillStyle=muted;ctx.textAlign='center';
+  [0.05,0.25,0.5,0.75,0.95].forEach(a=>ctx.fillText(Math.round(a*100)+'%',X(a),Tp+H+18));
+  ctx.fillText('доверие сегодня →',L+W/2,h-4);
+  ctx.textAlign='right';[0.25,0.75,1].forEach(R=>ctx.fillText(String(R*1000),L-8,Y(R)+5));
+  ctx.save();ctx.translate(14,Tp+H/2);ctx.rotate(-Math.PI/2);ctx.textAlign='center';ctx.fillText('разрешений →',0,0);ctx.restore();
+  [[0.905,'905 — до гильотины'],[0.496,'496 — сейчас']].forEach(([R,t])=>{ctx.strokeStyle=muted;ctx.setLineDash([3,3]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(L,Y(R));ctx.lineTo(L+W,Y(R));ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=ink;ctx.textAlign='right';ctx.fillText(t,L+W-6,Y(R)-6);});
+  const sim=S.sim;ctx.strokeStyle=ink;ctx.lineWidth=2.2;ctx.beginPath();
+  sim.A.forEach((a,t)=>{const x=X(a),y=Y(Math.max(0.05,sim.R[t]));t?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+  ctx.fillStyle=ink;ctx.beginPath();ctx.arc(X(sim.A[0]),Y(Math.max(0.05,sim.R[0])),7,0,7);ctx.fill();
+  const tip=document.getElementById('tip-phase');
+  if(phaseHover){const {i,j}=phaseHover;const a0=AMIN+(i+0.5)/N*(AMAX-AMIN),R0=0.05+(j+0.5)/N*0.95,res=cells[i][j];
+    ctx.strokeStyle=ink;ctx.lineWidth=2;ctx.strokeRect(L+i*cw,Tp+H-(j+1)*ch,cw,ch);
+    tip.innerHTML=`старт: доверие ${pc(a0,0)}, разрешений ${perm(R0)}<br><b>${res?'приходит к доверию':'остаётся в ловушке'}</b>`;
+    tip.hidden=false;const tw=tip.offsetWidth,px=L+(i+1)*cw+8;tip.style.left=Math.max(0,Math.min(w-tw,px))+'px';tip.style.top=Math.max(0,Tp+H-(j+1)*ch-40)+'px';}
+  else tip.hidden=true;
+  cv._geo={L,Tp,W,H,N};
+}
+function phaseMove(e){const cv=e.currentTarget,g=cv._geo;if(!g)return;const r=cv.getBoundingClientRect();
+  const i=Math.floor((e.clientX-r.left-g.L)/g.W*g.N),j=Math.floor((g.Tp+g.H-(e.clientY-r.top))/g.H*g.N);
+  phaseHover=(i>=0&&i<g.N&&j>=0&&j<g.N)?{i,j}:null;drawPhase();}
+
+build();update();
+const tc=document.getElementById('traj'),pcv=document.getElementById('phase');
+tc.addEventListener('pointermove',trajHover);tc.addEventListener('pointerleave',()=>{hoverT=null;drawTraj();});
+pcv.addEventListener('pointermove',phaseMove);pcv.addEventListener('pointerleave',()=>{phaseHover=null;drawPhase();});
+let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(update,150);});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',update);
+new MutationObserver(update).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+</script>
+</body>
+</html>
